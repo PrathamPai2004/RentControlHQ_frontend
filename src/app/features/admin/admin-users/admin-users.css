@@ -1,0 +1,115 @@
+@import url('../towers/towers.css');
+
+/* User accordion cards */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-card {
+  background: #1e2440;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.user-card:hover {
+  border-color: rgba(79,142,247,0.3);
+}
+
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.user-header:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f8ef7, #6c63ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.user-email {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-expand {
+  color: rgba(255,255,255,0.35);
+  font-size: 0.75rem;
+  transition: transform 0.2s;
+}
+
+/* Expanded panel */
+.user-details {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 20px 22px;
+  background: rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.detail-section { margin-bottom: 4px; }
+
+.detail-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.detail-empty {
+  color: rgba(255,255,255,0.3);
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+/* action toast */
+.action-toast {
+  background: rgba(79,142,247,0.10);
+  border: 1px solid rgba(79,142,247,0.25);
+  border-radius: 10px;
+  color: #93c5fd;
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}

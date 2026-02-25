@@ -1,0 +1,22 @@
+<div class="section-header">
+  <h2 class="section-title">🏢 Browse Towers</h2>
+  <p class="section-sub">Explore all available towers</p>
+</div>
+
+<div *ngIf="loading" class="state-msg">Loading towers…</div>
+<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+<div *ngIf="!loading && towers.length === 0 && !error" class="state-msg">No towers available.</div>
+
+<div class="card-grid" *ngIf="!loading && towers.length > 0">
+  <div class="card" *ngFor="let tower of towers">
+    <div class="card-header">
+      <div class="card-icon">🏢</div>
+      <div>
+        <h3 class="card-title">{{ tower.name }}</h3>
+        <p class="card-meta">Tower ID: <strong>#{{ tower.id }}</strong></p>
+      </div>
+    </div>
+    <p class="card-meta">Total Units: <strong>{{ tower.total_units }}</strong></p>
+    <button class="btn-book" (click)="viewUnits(tower.id)">View Units →</button>
+  </div>
+</div>

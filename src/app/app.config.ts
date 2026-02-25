@@ -1,11 +1,20 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
+import { authRoutes } from './features/auth/auth.routes';
+import { adminRoutes } from './features/admin/admin.routes';
+import { userRoutes } from './features/user/user.routes';
+import { Home } from './features/home/home';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
+    provideHttpClient(),
+    provideRouter([
+      { path: '',      component: Home           },
+      { path: 'auth',  children:  authRoutes     },
+      { path: 'admin', children:  adminRoutes    },
+      { path: 'user',  children:  userRoutes     },
+      { path: '**',    redirectTo: ''            }
+    ])
   ]
 };

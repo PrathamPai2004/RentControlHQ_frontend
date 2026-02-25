@@ -1,0 +1,30 @@
+<div class="section-header">
+  <h2 class="section-title">📄 My Lease</h2>
+  <p class="section-sub">Your active and past lease agreements</p>
+</div>
+
+<div *ngIf="loading" class="state-msg">Loading your lease…</div>
+<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+<div *ngIf="!loading && leases.length === 0 && !error" class="state-msg">
+  You have no active lease. Your booking must be approved first.
+</div>
+
+<div class="card-grid" *ngIf="!loading && leases.length > 0">
+  <div class="card" *ngFor="let l of leases">
+    <div class="card-header">
+      <div class="card-icon">📄</div>
+      <div>
+        <h3 class="card-title">Lease #{{ l.lease_id }}</h3>
+        <p class="card-meta">Booking: <strong>#{{ l.booking_id }}</strong></p>
+      </div>
+    </div>
+    <p class="card-meta">Start Date: <strong>{{ l.start_date }}</strong></p>
+    <p class="card-meta">End Date: <strong>{{ l.end_date || 'Ongoing' }}</strong></p>
+    <p class="card-meta">
+      Status:
+      <span class="badge" [class.badge-active]="!l.end_date" [class.badge-rejected]="!!l.end_date">
+        {{ l.end_date ? 'Expired' : 'Active' }}
+      </span>
+    </p>
+  </div>
+</div>

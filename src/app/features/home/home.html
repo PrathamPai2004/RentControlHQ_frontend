@@ -1,0 +1,108 @@
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">🏠</span>
+    <span class="brand-name">RentControlHQ</span>
+  </div>
+  <div class="nav-actions">
+    <a routerLink="/auth/login"    class="btn-ghost">Sign In</a>
+    <a routerLink="/auth/register" class="btn-primary-sm">Get Started →</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="hero-badge">🏙️ Rental Management, Reimagined</div>
+
+  <h1 class="hero-title">
+    Find Your Perfect<br/>
+    <span class="gradient-text">Home, Effortlessly.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Browse towers, book units, track your lease — all from one sleek dashboard.
+    Built for modern tenants and powerful enough for admins.
+  </p>
+
+  <div class="hero-cta">
+    <a routerLink="/auth/register" class="btn-hero-primary">
+      Start For Free
+      <span class="btn-arrow">→</span>
+    </a>
+    <a routerLink="/auth/login" class="btn-hero-ghost">
+      Sign In
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-value">{{ towerCount }}</span>
+      <span class="stat-label">Towers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">{{ unitCount }}</span>
+      <span class="stat-label">Units</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">24/7</span>
+      <span class="stat-label">Support</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ════════════════════════════════════════════ -->
+<section class="section features-section">
+  <div class="section-tag">Everything You Need</div>
+  <h2 class="section-title">Designed for the Modern Tenant</h2>
+  <p class="section-sub">From browsing to move-in — the entire rental journey in one platform.</p>
+
+  <div class="features-grid">
+    <div class="feature-card" *ngFor="let f of features">
+      <div class="feature-icon">{{ f.icon }}</div>
+      <h3 class="feature-title">{{ f.title }}</h3>
+      <p class="feature-desc">{{ f.desc }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ════════════════════════════════════════ -->
+<section class="section steps-section">
+  <div class="section-tag">Simple Process</div>
+  <h2 class="section-title">From Search to Move-In</h2>
+  <p class="section-sub">Four simple steps to your next home.</p>
+
+  <div class="steps-grid">
+    <div class="step-card" *ngFor="let s of steps">
+      <div class="step-num">{{ s.num }}</div>
+      <h3 class="step-title">{{ s.title }}</h3>
+      <p class="step-desc">{{ s.desc }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA BANNER ══════════════════════════════════════════ -->
+<section class="cta-banner">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title">Ready to Find Your Next Home?</h2>
+  <p class="cta-sub">Join RentControlHQ today — free to register, instant access.</p>
+  <div class="cta-actions">
+    <a routerLink="/auth/register" class="btn-hero-primary">
+      Create Free Account →
+    </a>
+    <a routerLink="/auth/login" class="btn-hero-ghost">Already a member? Sign In</a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-brand">
+    <span>🏠</span>
+    <span class="brand-name">RentControlHQ</span>
+  </div>
+  <p class="footer-copy">© 2026 RentControlHQ. Built with ❤️ for modern living.</p>
+</footer>

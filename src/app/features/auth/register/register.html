@@ -1,0 +1,77 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-brand">
+      <span class="brand-icon">🏠</span>
+      <span class="brand-name">RentControlHQ</span>
+    </div>
+
+    <!-- Success state -->
+    <div class="success-state" *ngIf="success">
+      <div class="success-icon">✉️</div>
+      <h2 class="auth-title">Check Your Email</h2>
+      <p class="auth-sub">{{ message }}</p>
+      <a routerLink="/auth/login" class="btn-primary" style="margin-top:24px; display:block; text-align:center; text-decoration:none;">
+        Back to Login
+      </a>
+    </div>
+
+    <!-- Register form -->
+    <div *ngIf="!success">
+      <h2 class="auth-title">Create Account</h2>
+      <p class="auth-sub">Join RentControlHQ and find your next home</p>
+
+      <form (ngSubmit)="register()" #form="ngForm" class="auth-form">
+
+        <div class="field-group">
+          <label for="reg-name">Full Name</label>
+          <input
+            id="reg-name"
+            type="text"
+            name="name"
+            placeholder="Prathamesh Pai"
+            [(ngModel)]="formData.name"
+            required />
+        </div>
+
+        <div class="field-group">
+          <label for="reg-email">Email Address</label>
+          <input
+            id="reg-email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            [(ngModel)]="formData.email"
+            required />
+        </div>
+
+        <div class="field-group">
+          <label for="reg-password">Password</label>
+          <input
+            id="reg-password"
+            type="password"
+            name="password"
+            placeholder="Min. 6 characters"
+            [(ngModel)]="formData.password"
+            required
+            minlength="6" />
+        </div>
+
+        <div class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || loading">
+          <span *ngIf="!loading">Create Account →</span>
+          <span *ngIf="loading">Creating account…</span>
+        </button>
+
+      </form>
+
+      <p class="auth-footer">
+        Already have an account?
+        <a routerLink="/auth/login">Sign in</a>
+      </p>
+    </div>
+
+  </div>
+</div>

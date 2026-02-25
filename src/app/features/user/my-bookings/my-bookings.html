@@ -1,0 +1,35 @@
+<div class="section-header">
+  <h2 class="section-title">📋 My Bookings</h2>
+  <p class="section-sub">Your booking history and current status</p>
+</div>
+
+<div *ngIf="loading" class="state-msg">Loading your bookings…</div>
+<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+<div *ngIf="!loading && bookings.length === 0 && !error" class="state-msg">
+  You have no bookings yet. <a href="/user/units" style="color:#34d399;">Browse units</a> to book one!
+</div>
+
+<div class="table-wrap" *ngIf="!loading && bookings.length > 0">
+  <table>
+    <thead>
+      <tr>
+        <th>Booking ID</th>
+        <th>Unit ID</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let b of bookings">
+        <td>#{{ b.id }}</td>
+        <td>Unit #{{ b.unit_id }}</td>
+        <td>
+          <span class="badge"
+            [class.badge-pending]="b.status === 'pending'"
+            [class.badge-approved]="b.status === 'approved'"
+            [class.badge-rejected]="b.status === 'rejected'"
+          >{{ b.status }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

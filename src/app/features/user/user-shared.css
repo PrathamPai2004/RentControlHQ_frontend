@@ -1,0 +1,142 @@
+/* Shared user page styles */
+.section-header { margin-bottom: 28px; }
+.section-title { font-size: 1.5rem; font-weight: 700; color: #fff; }
+.section-sub { color: rgba(255,255,255,0.45); font-size: 0.88rem; margin-top: 4px; }
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #1a2235;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.card-header { display: flex; align-items: center; gap: 14px; }
+.card-icon {
+  font-size: 2rem;
+  background: rgba(52,211,153,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  flex-shrink: 0;
+}
+
+.card-title { font-size: 1rem; font-weight: 600; color: #fff; }
+.card-meta { font-size: 0.83rem; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
+.card-meta strong { color: rgba(255,255,255,0.85); }
+
+/* Action button on card */
+.btn-book {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-book:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-book:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Table */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+table { width: 100%; border-collapse: collapse; background: #1a2235; }
+
+thead tr { background: rgba(52,211,153,0.08); }
+
+th {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+td {
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-pending  { background: rgba(250,204,21,0.15);  color: #facc15; border: 1px solid rgba(250,204,21,0.3);  }
+.badge-approved { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3);  }
+.badge-rejected { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.badge-active   { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3);  }
+.badge-available{ background: rgba(79,142,247,0.15);  color: #4f8ef7; border: 1px solid rgba(79,142,247,0.3);  }
+.badge-booked   { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+
+/* Toast */
+.toast {
+  background: rgba(52,211,153,0.1);
+  border: 1px solid rgba(52,211,153,0.25);
+  border-radius: 10px;
+  color: #6ee7b7;
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+
+.toast.error {
+  background: rgba(248,113,113,0.1);
+  border-color: rgba(248,113,113,0.25);
+  color: #fca5a5;
+}
+
+/* State messages */
+.state-msg { color: rgba(255,255,255,0.4); font-size: 0.9rem; padding: 40px 0; text-align: center; }
+.error-msg  { color: #f87171; }
+
+/* Tower selector */
+.tower-picker { margin-bottom: 24px; }
+.tower-select {
+  background: #1a2235;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-size: 0.92rem;
+  padding: 11px 16px;
+  min-width: 260px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.tower-select:focus { border-color: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,0.15); }
+.tower-select option { background: #1a2235; color: #e2e8f0; }

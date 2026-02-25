@@ -1,0 +1,41 @@
+<div class="section-header">
+  <h2 class="section-title">📄 Leases</h2>
+  <p class="section-sub">All active and past lease records</p>
+</div>
+
+<div *ngIf="loading" class="state-msg">Loading leases…</div>
+<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+
+<div *ngIf="!loading && leases.length === 0 && !error" class="state-msg">
+  No leases found.
+</div>
+
+<div class="table-wrap" *ngIf="!loading && leases.length > 0">
+  <table>
+    <thead>
+      <tr>
+        <th>Lease ID</th>
+        <th>Booking ID</th>
+        <th>User ID</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let l of leases">
+        <td>#{{ l.lease_id }}</td>
+        <td>#{{ l.booking_id }}</td>
+        <td>{{ l.user_id }}</td>
+        <td>{{ l.start_date }}</td>
+        <td>{{ l.end_date || '—' }}</td>
+        <td>
+          <span class="badge"
+            [class.badge-active]="!l.end_date"
+            [class.badge-rejected]="!!l.end_date"
+          >{{ l.end_date ? 'Expired' : 'Active' }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

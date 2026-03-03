@@ -1,46 +1,156 @@
-<div class="section-header">
-  <div class="header-row">
-    <div>
-      <h2 class="section-title">🏢 Towers</h2>
-      <p class="section-sub">All registered towers in the system</p>
+<div class="page-wrapper">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title-group">
+        <h2 class="page-title">Towers</h2>
+        <p class="page-subtitle">Manage and monitor all building towers</p>
+      </div>
     </div>
-    <button class="btn-add" (click)="showForm = !showForm">
-      {{ showForm ? '✕ Cancel' : '＋ Add Tower' }}
+    <button class="btn-primary" (click)="showForm = !showForm">
+      <span>{{ showForm ? '✕' : '+' }}</span>
+      {{ showForm ? 'Cancel' : 'Add Tower' }}
     </button>
   </div>
-</div>
 
-<!-- Add Tower Form -->
-<div class="inline-form" *ngIf="showForm">
-  <h3 class="form-title">Add New Tower</h3>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Tower Name</label>
-      <input type="text" [(ngModel)]="newName" placeholder="e.g. Tower C" />
+  <!-- Add Tower Form -->
+  <div class="form-panel" *ngIf="showForm" [@slideDown]>
+    <div class="form-panel-header">
+      <div class="form-panel-icon">🏗️</div>
+      <div>
+        <h3 class="form-panel-title">Add New Tower</h3>
+        <p class="form-panel-sub">Create a new building tower in the system</p>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Total Units</label>
-      <input type="number" [(ngModel)]="newTotalUnits" placeholder="e.g. 50" min="1" />
+    <div class="form-fields">
+      <div class="field-group">
+        <label class="field-label">Tower Name</label>
+        <div class="field-input-wrap">
+          <span class="field-prefix">🏢</span>
+          <input type="text" class="field-input" [(ngModel)]="newName" placeholder="e.g. Tower C" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Total Units</label>
+        <div class="field-input-wrap">
+          <span class="field-prefix">🚪</span>
+          <input type="number" class="field-input" [(ngModel)]="newTotalUnits" placeholder="e.g. 50" min="1" />
+        </div>
+      </div>
+      <button class="btn-submit" (click)="addTower()" [disabled]="adding || !newName || !newTotalUnits">
+        <span *ngIf="!adding">✓ Add Tower</span>
+        <span *ngIf="adding" class="spinner-wrap">
+          <span class="spinner"></span> Adding…
+        </span>
+      </button>
     </div>
-    <button class="btn-submit" (click)="addTower()" [disabled]="adding || !newName || !newTotalUnits">
-      {{ adding ? 'Adding…' : 'Add Tower' }}
-    </button>
+    <div class="form-feedback success" *ngIf="addMsg">✓ {{ addMsg }}</div>
+    <div class="form-feedback error" *ngIf="addError">✗ {{ addError }}</div>
   </div>
-  <p class="form-success" *ngIf="addMsg">{{ addMsg }}</p>
-  <p class="form-error" *ngIf="addError">{{ addError }}</p>
-</div>
 
-<div *ngIf="loading" class="state-msg">Loading towers…</div>
-<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
-<div *ngIf="!loading && towers.length === 0 && !error" class="state-msg">No towers found.</div>
-
-<div class="card-grid" *ngIf="!loading && towers.length > 0">
-  <div class="card" *ngFor="let tower of towers">
-    <div class="card-icon">🏢</div>
-    <div class="card-body">
-      <h3 class="card-title">{{ tower.name }}</h3>
-      <p class="card-meta">Tower ID: <strong>#{{ tower.id }}</strong></p>
-      <p class="card-meta">Total Units: <strong>{{ tower.total_units }}</strong></p>
+  <!-- Stats Bar -->
+  <div class="stats-bar" *ngIf="!loading && towers.length > 0">
+    <div class="stat-chip">
+      <span class="stat-num">{{ towers.length }}</span>
+      <span class="stat-lbl">Total Towers</span>
+    </div>
+    <div class="stat-chip accent-green">
+      <span class="stat-num">{{ totalUnits }}</span>
+      <span class="stat-lbl">Total Units</span>
+    </div>
+    <div class="stat-chip accent-purple" *ngIf="selectedTower">
+      <span class="stat-num">{{ selectedTower.total_units }}</span>
+      <span class="stat-lbl">Selected Tower Units</span>
     </div>
   </div>
+
+  <!-- States -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner-lg"></div>
+    <p>Loading towers…</p>
+  </div>
+  <div class="state-container error" *ngIf="error">
+    <span class="state-icon">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+  <div class="state-container" *ngIf="!loading && towers.length === 0 && !error">
+    <span class="state-icon">🏗️</span>
+    <p>No towers found. Add your first tower!</p>
+  </div>
+
+  <!-- Tower Grid -->
+  <div class="tower-grid" *ngIf="!loading && towers.length > 0">
+    <div
+      class="tower-card"
+      *ngFor="let tower of towers; let i = index"
+      [class.selected]="selectedTower?.id === tower.id"
+      (click)="selectTower(tower)"
+      [style.animation-delay]="i * 60 + 'ms'"
+    >
+      <div class="tower-card-bg"></div>
+      <div class="tower-card-top">
+        <div class="tower-visual">
+          <div class="tower-building">
+            <div class="tower-floors" [style.height]="getFloorHeight(tower.total_units)"></div>
+          </div>
+        </div>
+        <div class="tower-selected-badge" *ngIf="selectedTower?.id === tower.id">
+          <span>✓ Selected</span>
+        </div>
+      </div>
+      <div class="tower-card-body">
+        <h3 class="tower-name">{{ tower.name }}</h3>
+        <div class="tower-id-chip">#{{ tower.id }}</div>
+        <div class="tower-stats">
+          <div class="tower-stat">
+            <span class="tower-stat-val">{{ tower.total_units }}</span>
+            <span class="tower-stat-lbl">Total Units</span>
+          </div>
+          <div class="tower-stat-divider"></div>
+          <div class="tower-stat">
+            <span class="tower-stat-val accent-green">—</span>
+            <span class="tower-stat-lbl">Available</span>
+          </div>
+        </div>
+      </div>
+      <div class="tower-card-footer">
+        <span class="tower-action">{{ selectedTower?.id === tower.id ? 'Currently Selected' : 'Click to Select' }}</span>
+        <span class="tower-arrow">→</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected Tower Details Panel -->
+  <div class="detail-panel" *ngIf="selectedTower">
+    <div class="detail-panel-header">
+      <div class="detail-panel-title">
+        <span class="detail-icon">🏢</span>
+        <div>
+          <h3>{{ selectedTower.name }}</h3>
+          <p>Tower Details & Information</p>
+        </div>
+      </div>
+      <button class="btn-ghost" (click)="selectedTower = null">✕ Deselect</button>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-item-label">Tower ID</span>
+        <span class="detail-item-value">#{{ selectedTower.id }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-item-label">Tower Name</span>
+        <span class="detail-item-value">{{ selectedTower.name }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-item-label">Total Units</span>
+        <span class="detail-item-value accent">{{ selectedTower.total_units }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-item-label">Status</span>
+        <span class="badge badge-active">Active</span>
+      </div>
+    </div>
+  </div>
+
 </div>

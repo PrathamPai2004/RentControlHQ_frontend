@@ -1,41 +1,74 @@
-<div class="section-header">
-  <h2 class="section-title">📄 Leases</h2>
-  <p class="section-sub">All active and past lease records</p>
-</div>
+<div class="page-wrapper">
 
-<div *ngIf="loading" class="state-msg">Loading leases…</div>
-<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title-group">
+        <h2 class="page-title">Leases</h2>
+        <p class="page-subtitle">All active and past lease agreements</p>
+      </div>
+    </div>
+    <div class="header-stats" *ngIf="!loading && leases.length > 0">
+      <div class="header-stat-chip active-chip">
+        <span>{{ activeCount }}</span> Active
+      </div>
+      <div class="header-stat-chip expired-chip">
+        <span>{{ expiredCount }}</span> Expired
+      </div>
+    </div>
+  </div>
 
-<div *ngIf="!loading && leases.length === 0 && !error" class="state-msg">
-  No leases found.
-</div>
+  <!-- States -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner-lg"></div><p>Loading leases…</p>
+  </div>
+  <div class="state-container error" *ngIf="error">
+    <span class="state-icon">⚠️</span><p>{{ error }}</p>
+  </div>
+  <div class="state-container" *ngIf="!loading && leases.length === 0 && !error">
+    <span class="state-icon">📄</span><p>No leases found.</p>
+  </div>
 
-<div class="table-wrap" *ngIf="!loading && leases.length > 0">
-  <table>
-    <thead>
-      <tr>
-        <th>Lease ID</th>
-        <th>Booking ID</th>
-        <th>User ID</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let l of leases">
-        <td>#{{ l.lease_id }}</td>
-        <td>#{{ l.booking_id }}</td>
-        <td>{{ l.user_id }}</td>
-        <td>{{ l.start_date }}</td>
-        <td>{{ l.end_date || '—' }}</td>
-        <td>
-          <span class="badge"
-            [class.badge-active]="!l.end_date"
-            [class.badge-rejected]="!!l.end_date"
-          >{{ l.end_date ? 'Expired' : 'Active' }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Leases Table -->
+  <div class="table-wrap" *ngIf="!loading && leases.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Lease ID</th>
+          <th>Booking ID</th>
+          <th>User ID</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let l of leases">
+          <td><span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">#</span>{{ l.lease_id }}</td>
+          <td><span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">#</span>{{ l.booking_id }}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:26px; height:26px; border-radius:7px; background:linear-gradient(135deg,#4f8ef7,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:#fff;">
+                {{ l.user_id }}
+              </div>
+              <span>{{ l.user_id }}</span>
+            </div>
+          </td>
+          <td>
+            <span style="font-size:0.85rem; color:rgba(255,255,255,0.7);">{{ l.start_date }}</span>
+          </td>
+          <td>
+            <span style="font-size:0.85rem; color:rgba(255,255,255,0.7);">{{ l.end_date || '—' }}</span>
+          </td>
+          <td>
+            <span class="badge"
+              [class.badge-active]="!l.end_date"
+              [class.badge-rejected]="!!l.end_date"
+            >{{ l.end_date ? 'Expired' : 'Active' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

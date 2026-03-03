@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './units.html',
-  styleUrl: './units.css'
+  styleUrls: ['../towers/towers.css', './units.css']
 })
 export class Units implements OnInit {
   units: any[] = [];
@@ -42,6 +42,16 @@ export class Units implements OnInit {
     });
   }
 
+  selectTower(towerId: number) {
+    this.selectedTowerId = towerId;
+    this.loadUnits();
+  }
+
+  getTowerName(towerId: number): string {
+    const t = this.towers.find(t => t.id === towerId);
+    return t ? t.name : `Tower #${towerId}`;
+  }
+
   loadUnits() {
     if (!this.selectedTowerId) return;
     this.loading = true;
@@ -67,7 +77,6 @@ export class Units implements OnInit {
         this.newRent = null;
         this.adding = false;
         this.showForm = false;
-        // Refresh units if currently viewing the same tower
         if (this.selectedTowerId === this.newTowerId) this.loadUnits();
         this.newTowerId = null;
         this.cdr.detectChanges();

@@ -1,85 +1,141 @@
-<div class="section-header">
-  <h2 class="section-title">👥 User Management</h2>
-  <p class="section-sub">View all users, their bookings and leases. Approve or reject bookings.</p>
-</div>
+<div class="page-wrapper">
 
-<div *ngIf="actionMsg" class="action-toast">{{ actionMsg }}</div>
-<div *ngIf="loading" class="state-msg">Loading users…</div>
-<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
-<div *ngIf="!loading && users.length === 0 && !error" class="state-msg">No users found.</div>
-
-<div class="user-list" *ngIf="!loading && users.length > 0">
-  <div class="user-card" *ngFor="let user of users">
-
-    <!-- User header row (clickable to expand) -->
-    <div class="user-header" (click)="toggleUser(user.id)">
-      <div class="user-info">
-        <span class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
-        <div>
-          <p class="user-name">{{ user.name }}</p>
-          <p class="user-email">{{ user.email }}</p>
-        </div>
-      </div>
-      <div class="user-meta">
-        <span class="badge" [class.badge-active]="user.is_verified" [class.badge-rejected]="!user.is_verified">
-          {{ user.is_verified ? 'Verified' : 'Unverified' }}
-        </span>
-        <span class="user-expand">{{ expandedUserId === user.id ? '▲' : '▼' }}</span>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title-group">
+        <h2 class="page-title">Users</h2>
+        <p class="page-subtitle">Manage all registered tenants and their activity</p>
       </div>
     </div>
+    <div class="header-stat-chip verified-chip" *ngIf="!loading && users.length > 0">
+      <span>{{ users.length }}</span> Total Users
+    </div>
+  </div>
 
-    <!-- Expanded details -->
-    <div class="user-details" *ngIf="expandedUserId === user.id">
+  <!-- Toast -->
+  <div class="action-toast" *ngIf="actionMsg">{{ actionMsg }}</div>
 
-      <!-- Bookings -->
-      <div class="detail-section">
-        <h4 class="detail-title">📋 Bookings</h4>
-        <div *ngIf="bookingsFor(user.id).length === 0" class="detail-empty">No bookings</div>
-        <table *ngIf="bookingsFor(user.id).length > 0">
-          <thead><tr><th>ID</th><th>Unit</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody>
-            <tr *ngFor="let b of bookingsFor(user.id)">
-              <td>#{{ b.id }}</td>
-              <td>Unit #{{ b.unit_id }}</td>
-              <td>
-                <span class="badge"
-                  [class.badge-pending]="b.status === 'pending'"
-                  [class.badge-approved]="b.status === 'approved'"
-                  [class.badge-rejected]="b.status === 'rejected'"
-                >{{ b.status }}</span>
-              </td>
-              <td>
-                <button *ngIf="b.status === 'pending'" class="btn btn-approve" (click)="approve(b.id)">Approve</button>
-                <button *ngIf="b.status === 'pending'" class="btn btn-reject"  (click)="reject(b.id)">Reject</button>
-                <span *ngIf="b.status !== 'pending'" style="color:rgba(255,255,255,0.3);font-size:0.8rem">—</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  <!-- States -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner-lg"></div><p>Loading users…</p>
+  </div>
+  <div class="state-container error" *ngIf="error">
+    <span class="state-icon">⚠️</span><p>{{ error }}</p>
+  </div>
+  <div class="state-container" *ngIf="!loading && users.length === 0 && !error">
+    <span class="state-icon">👥</span><p>No users found.</p>
+  </div>
+
+  <!-- User List -->
+  <div class="user-list" *ngIf="!loading && users.length > 0">
+    <div class="user-card" *ngFor="let user of users">
+
+      <!-- User Header -->
+      <div class="user-header" (click)="toggleUser(user.id)">
+        <div class="user-info">
+          <div class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+          <div>
+            <p class="user-name">{{ user.name }}</p>
+            <p class="user-email">{{ user.email }}</p>
+          </div>
+        </div>
+        <div class="user-meta">
+          <div class="user-quick-stats">
+            <span class="quick-stat" title="Bookings">
+              📋 {{ bookingsFor(user.id).length }}
+            </span>
+            <span class="quick-stat" title="Leases">
+              📄 {{ leasesFor(user.id).length }}
+            </span>
+          </div>
+          <span class="badge" [class.badge-active]="user.is_verified" [class.badge-rejected]="!user.is_verified">
+            {{ user.is_verified ? 'Verified' : 'Unverified' }}
+          </span>
+          <span class="user-expand">{{ expandedUserId === user.id ? '▲' : '▼' }}</span>
+        </div>
       </div>
 
-      <!-- Leases -->
-      <div class="detail-section">
-        <h4 class="detail-title">📄 Leases</h4>
-        <div *ngIf="leasesFor(user.id).length === 0" class="detail-empty">No active lease</div>
-        <table *ngIf="leasesFor(user.id).length > 0">
-          <thead><tr><th>Lease ID</th><th>Booking</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr *ngFor="let l of leasesFor(user.id)">
-              <td>#{{ l.lease_id }}</td>
-              <td>#{{ l.booking_id }}</td>
-              <td>{{ l.start_date }}</td>
-              <td>{{ l.end_date || '—' }}</td>
-              <td>
-                <span class="badge" [class.badge-active]="!l.end_date" [class.badge-rejected]="!!l.end_date">
-                  {{ l.end_date ? 'Expired' : 'Active' }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- Expanded Details -->
+      <div class="user-details" *ngIf="expandedUserId === user.id">
 
+        <!-- Bookings Sub-section -->
+        <div class="detail-section">
+          <div class="detail-section-header">
+            <h4 class="detail-title">📋 Bookings</h4>
+            <span class="detail-count">{{ bookingsFor(user.id).length }}</span>
+          </div>
+          <div class="detail-empty" *ngIf="bookingsFor(user.id).length === 0">No bookings for this user</div>
+          <div class="sub-table-wrap" *ngIf="bookingsFor(user.id).length > 0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Unit</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let b of bookingsFor(user.id)">
+                  <td>#{{ b.id }}</td>
+                  <td>Unit #{{ b.unit_id }}</td>
+                  <td>
+                    <span class="badge"
+                      [class.badge-pending]="b.status === 'pending'"
+                      [class.badge-approved]="b.status === 'approved'"
+                      [class.badge-rejected]="b.status === 'rejected'"
+                    >{{ b.status }}</span>
+                  </td>
+                  <td>
+                    <div class="action-group" *ngIf="b.status === 'pending'">
+                      <button class="btn-action btn-approve" (click)="approve(b.id)">✓ Approve</button>
+                      <button class="btn-action btn-reject" (click)="reject(b.id)">✗ Reject</button>
+                    </div>
+                    <span *ngIf="b.status !== 'pending'" style="color:rgba(255,255,255,0.25); font-size:0.82rem;">—</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Leases Sub-section -->
+        <div class="detail-section">
+          <div class="detail-section-header">
+            <h4 class="detail-title">📄 Leases</h4>
+            <span class="detail-count">{{ leasesFor(user.id).length }}</span>
+          </div>
+          <div class="detail-empty" *ngIf="leasesFor(user.id).length === 0">No active lease</div>
+          <div class="sub-table-wrap" *ngIf="leasesFor(user.id).length > 0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Lease ID</th>
+                  <th>Booking</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let l of leasesFor(user.id)">
+                  <td>#{{ l.lease_id }}</td>
+                  <td>#{{ l.booking_id }}</td>
+                  <td>{{ l.start_date }}</td>
+                  <td>{{ l.end_date || '—' }}</td>
+                  <td>
+                    <span class="badge" [class.badge-active]="!l.end_date" [class.badge-rejected]="!!l.end_date">
+                      {{ l.end_date ? 'Expired' : 'Active' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>

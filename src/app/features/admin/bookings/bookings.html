@@ -1,53 +1,83 @@
-<div class="section-header">
-  <h2 class="section-title">📋 Bookings</h2>
-  <p class="section-sub">Manage all booking requests</p>
-</div>
+<div class="page-wrapper">
 
-<div *ngIf="actionMsg" class="action-toast">{{ actionMsg }}</div>
-<div *ngIf="loading" class="state-msg">Loading bookings…</div>
-<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title-group">
+        <h2 class="page-title">Bookings</h2>
+        <p class="page-subtitle">Review and manage all tenant booking requests</p>
+      </div>
+    </div>
+    <div class="header-stats" *ngIf="!loading && bookings.length > 0">
+      <div class="header-stat-chip pending">
+        <span>{{ pendingCount }}</span> Pending
+      </div>
+      <div class="header-stat-chip approved">
+        <span>{{ approvedCount }}</span> Approved
+      </div>
+      <div class="header-stat-chip rejected">
+        <span>{{ rejectedCount }}</span> Rejected
+      </div>
+    </div>
+  </div>
 
-<div *ngIf="!loading && bookings.length === 0 && !error" class="state-msg">
-  No bookings found.
-</div>
+  <!-- Toast -->
+  <div class="action-toast" *ngIf="actionMsg">{{ actionMsg }}</div>
 
-<div class="table-wrap" *ngIf="!loading && bookings.length > 0">
-  <table>
-    <thead>
-      <tr>
-        <th>Booking ID</th>
-        <th>User ID</th>
-        <th>Unit ID</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let b of bookings">
-        <td>#{{ b.id }}</td>
-        <td>{{ b.user_id }}</td>
-        <td>{{ b.unit_id }}</td>
-        <td>
-          <span class="badge"
-            [class.badge-pending]="b.status === 'pending'"
-            [class.badge-approved]="b.status === 'approved'"
-            [class.badge-rejected]="b.status === 'rejected'"
-          >{{ b.status }}</span>
-        </td>
-        <td>
-          <button
-            *ngIf="b.status === 'pending'"
-            class="btn btn-approve"
-            (click)="approve(b.id)"
-          >Approve</button>
-          <button
-            *ngIf="b.status === 'pending'"
-            class="btn btn-reject"
-            (click)="reject(b.id)"
-          >Reject</button>
-          <span *ngIf="b.status !== 'pending'" style="color:rgba(255,255,255,0.3); font-size:0.8rem;">—</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- States -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner-lg"></div><p>Loading bookings…</p>
+  </div>
+  <div class="state-container error" *ngIf="error">
+    <span class="state-icon">⚠️</span><p>{{ error }}</p>
+  </div>
+  <div class="state-container" *ngIf="!loading && bookings.length === 0 && !error">
+    <span class="state-icon">📋</span><p>No bookings found.</p>
+  </div>
+
+  <!-- Bookings Table -->
+  <div class="table-wrap" *ngIf="!loading && bookings.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>User ID</th>
+          <th>Unit ID</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of bookings">
+          <td>
+            <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">#</span>{{ b.id }}
+          </td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,#4f8ef7,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:#fff; flex-shrink:0;">
+                {{ b.user_id }}
+              </div>
+              <span>User #{{ b.user_id }}</span>
+            </div>
+          </td>
+          <td>Unit #{{ b.unit_id }}</td>
+          <td>
+            <span class="badge"
+              [class.badge-pending]="b.status === 'pending'"
+              [class.badge-approved]="b.status === 'approved'"
+              [class.badge-rejected]="b.status === 'rejected'"
+            >{{ b.status }}</span>
+          </td>
+          <td>
+            <div class="action-group" *ngIf="b.status === 'pending'">
+              <button class="btn-action btn-approve" (click)="approve(b.id)">✓ Approve</button>
+              <button class="btn-action btn-reject" (click)="reject(b.id)">✗ Reject</button>
+            </div>
+            <span *ngIf="b.status !== 'pending'" style="color:rgba(255,255,255,0.25); font-size:0.82rem;">—</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

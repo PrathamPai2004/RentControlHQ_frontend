@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -15,27 +15,37 @@ export class Register {
 
   formData = { name: '', email: '', password: '' };
 
-  message = '';
+  message  = '';
   errorMsg = '';
-  loading = false;
-  success = false;
+  loading  = false;
+  success  = false;
 
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private zone: NgZone
+  ) {}
 
   register() {
-    this.message = '';
+    this.message  = '';
     this.errorMsg = '';
-    this.loading = true;
+    this.loading  = true;
 
     this.auth.register(this.formData).subscribe({
       next: (res: any) => {
-        this.loading = false;
-        this.success = true;
-        this.message = res?.message || 'Account created! Please check your email to verify.';
+        this.zone.run(() => {
+          this.loading = false;
+          this.success = true;
+          this.message = res?.message || 'Account created! Please check your email to verify.';
+          // Brief pause so user sees the success state, then redirect
+          setTimeout(() => this.router.navigate(['/auth/verify-email']), 1500);
+        });
       },
       error: (err) => {
-        this.loading = false;
-        this.errorMsg = err.error?.error || err.error?.message || 'Registration failed. Try again.';
+        this.zone.run(() => {
+          this.loading  = false;
+          this.errorMsg = err.error?.error || err.error?.message || 'Registration failed. Try again.';
+        });
       }
     });
   }

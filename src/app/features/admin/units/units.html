@@ -1,80 +1,132 @@
-<div class="section-header">
-  <div class="header-row">
-    <div>
-      <h2 class="section-title">🚪 Units</h2>
-      <p class="section-sub">View and manage units by tower</p>
+<div class="page-wrapper">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title-group">
+        <h2 class="page-title">Units</h2>
+        <p class="page-subtitle">View and manage units across all towers</p>
+      </div>
     </div>
-    <button class="btn-add" (click)="showForm = !showForm">
-      {{ showForm ? '✕ Cancel' : '＋ Add Unit' }}
+    <button class="btn-primary" (click)="showForm = !showForm">
+      <span>{{ showForm ? '✕' : '+' }}</span>
+      {{ showForm ? 'Cancel' : 'Add Unit' }}
     </button>
   </div>
-</div>
 
-<!-- Add Unit Form -->
-<div class="inline-form" *ngIf="showForm">
-  <h3 class="form-title">Add New Unit</h3>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Tower</label>
-      <select [(ngModel)]="newTowerId">
-        <option [ngValue]="null">— Select Tower —</option>
-        <option *ngFor="let t of towers" [ngValue]="t.id">{{ t.name }} (#{{ t.id }})</option>
-      </select>
+  <!-- Add Unit Form -->
+  <div class="form-panel" *ngIf="showForm">
+    <div class="form-panel-header">
+      <div class="form-panel-icon">🚪</div>
+      <div>
+        <h3 class="form-panel-title">Add New Unit</h3>
+        <p class="form-panel-sub">Create a new rental unit in a tower</p>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Unit Number</label>
-      <input type="number" [(ngModel)]="newUnitNumber" placeholder="e.g. 101" min="1" />
+    <div class="form-fields">
+      <div class="field-group">
+        <label class="field-label">Select Tower</label>
+        <div class="field-input-wrap">
+          <span class="field-prefix">🏢</span>
+          <select class="field-input" [(ngModel)]="newTowerId">
+            <option [ngValue]="null">— Select Tower —</option>
+            <option *ngFor="let t of towers" [ngValue]="t.id">{{ t.name }} (#{{ t.id }})</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Unit Number</label>
+        <div class="field-input-wrap">
+          <span class="field-prefix">#</span>
+          <input type="number" class="field-input" [(ngModel)]="newUnitNumber" placeholder="e.g. 101" min="1" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Monthly Rent (₹)</label>
+        <div class="field-input-wrap">
+          <span class="field-prefix">₹</span>
+          <input type="number" class="field-input" [(ngModel)]="newRent" placeholder="e.g. 15000" min="1" />
+        </div>
+      </div>
+      <button class="btn-submit" (click)="addUnit()" [disabled]="adding || !newTowerId || !newUnitNumber || !newRent">
+        <span *ngIf="!adding">✓ Add Unit</span>
+        <span *ngIf="adding" class="spinner-wrap"><span class="spinner"></span> Adding…</span>
+      </button>
     </div>
-    <div class="form-group">
-      <label>Monthly Rent (₹)</label>
-      <input type="number" [(ngModel)]="newRent" placeholder="e.g. 15000" min="1" />
-    </div>
-    <button class="btn-submit" (click)="addUnit()" [disabled]="adding || !newTowerId || !newUnitNumber || !newRent">
-      {{ adding ? 'Adding…' : 'Add Unit' }}
-    </button>
+    <div class="form-feedback success" *ngIf="addMsg">✓ {{ addMsg }}</div>
+    <div class="form-feedback error" *ngIf="addError">✗ {{ addError }}</div>
   </div>
-  <p class="form-success" *ngIf="addMsg">{{ addMsg }}</p>
-  <p class="form-error" *ngIf="addError">{{ addError }}</p>
-</div>
 
-<!-- View units by tower -->
-<div class="tower-picker" *ngIf="!towersLoading">
-  <label style="color:rgba(255,255,255,0.55); font-size:0.85rem; margin-bottom:8px; display:block;">Filter by Tower</label>
-  <select id="towerSelect" [(ngModel)]="selectedTowerId" (change)="loadUnits()" class="tower-select">
-    <option [ngValue]="null">— Select a Tower to view units —</option>
-    <option *ngFor="let t of towers" [ngValue]="t.id">{{ t.name }} (#{{ t.id }})</option>
-  </select>
-</div>
+  <!-- Tower Filter Pills -->
+  <div *ngIf="!towersLoading">
+    <div class="field-label" style="margin-bottom: 10px;">Filter by Tower</div>
+    <div class="tower-picker-bar">
+      <div
+        class="tower-pill"
+        *ngFor="let t of towers"
+        [class.active]="selectedTowerId === t.id"
+        (click)="selectTower(t.id)"
+      >
+        <span class="tower-pill-dot"></span>
+        {{ t.name }}
+        <span style="opacity:0.5; font-size:0.75rem;">#{{ t.id }}</span>
+      </div>
+    </div>
+  </div>
 
-<div *ngIf="towersLoading" class="state-msg">Loading towers…</div>
-<div *ngIf="loading" class="state-msg">Loading units…</div>
-<div *ngIf="error" class="state-msg error-msg">{{ error }}</div>
-<div *ngIf="!loading && selectedTowerId && units.length === 0 && !error" class="state-msg">No units in this tower.</div>
+  <!-- States -->
+  <div class="state-container" *ngIf="towersLoading">
+    <div class="spinner-lg"></div><p>Loading towers…</p>
+  </div>
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner-lg"></div><p>Loading units…</p>
+  </div>
+  <div class="state-container error" *ngIf="error">
+    <span class="state-icon">⚠️</span><p>{{ error }}</p>
+  </div>
+  <div class="state-container" *ngIf="!towersLoading && !selectedTowerId && !loading">
+    <span class="state-icon">🏢</span>
+    <p>Select a tower above to view its units</p>
+  </div>
+  <div class="state-container" *ngIf="!loading && selectedTowerId && units.length === 0 && !error">
+    <span class="state-icon">🚪</span>
+    <p>No units found in this tower.</p>
+  </div>
 
-<div class="table-wrap" *ngIf="!loading && units.length > 0">
-  <table>
-    <thead>
-      <tr>
-        <th>Unit ID</th>
-        <th>Unit No.</th>
-        <th>Tower</th>
-        <th>Rent (₹)</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let u of units">
-        <td>#{{ u['unit id'] }}</td>
-        <td>{{ u.unit_number }}</td>
-        <td>{{ u.tower_id }}</td>
-        <td>₹{{ u.rent }}</td>
-        <td>
-          <span class="badge"
-            [class.badge-available]="u.status === 'available'"
-            [class.badge-booked]="u.status === 'booked'"
-          >{{ u.status }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Units Table -->
+  <div class="table-wrap" *ngIf="!loading && units.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Unit ID</th>
+          <th>Unit No.</th>
+          <th>Tower</th>
+          <th>Monthly Rent</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of units">
+          <td><span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">#</span>{{ u['unit id'] }}</td>
+          <td>
+            <span style="background:rgba(79,142,247,0.1); color:#4f8ef7; padding:3px 8px; border-radius:6px; font-size:0.8rem; font-weight:600;">
+              {{ u.unit_number }}
+            </span>
+          </td>
+          <td>{{ getTowerName(u.tower_id) }}</td>
+          <td>
+            <span style="font-weight: 600;">₹{{ u.rent | number }}</span>
+            <span style="color:rgba(255,255,255,0.35); font-size:0.75rem;"> /mo</span>
+          </td>
+          <td>
+            <span class="badge"
+              [class.badge-available]="u.status === 'available'"
+              [class.badge-booked]="u.status === 'booked'"
+            >{{ u.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

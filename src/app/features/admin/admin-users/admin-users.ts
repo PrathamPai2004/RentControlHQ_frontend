@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-users.html',
-  styleUrl: './admin-users.css'
+  styleUrls: ['../towers/towers.css', './admin-users.css']
 })
 export class AdminUsers implements OnInit {
   users: any[] = [];
@@ -17,6 +17,7 @@ export class AdminUsers implements OnInit {
   error = '';
   actionMsg = '';
   expandedUserId: number | null = null;
+  private toastTimer: any;
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
@@ -56,25 +57,27 @@ export class AdminUsers implements OnInit {
     this.cdr.detectChanges();
   }
 
-  bookingsFor(userId: number) {
-    return this.bookings.filter(b => b.user_id === userId);
-  }
+  bookingsFor(userId: number) { return this.bookings.filter(b => b.user_id === userId); }
+  leasesFor(userId: number) { return this.leases.filter(l => l.user_id === userId); }
 
-  leasesFor(userId: number) {
-    return this.leases.filter(l => l.user_id === userId);
+  private showToast(msg: string) {
+    this.actionMsg = msg;
+    this.cdr.detectChanges();
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => { this.actionMsg = ''; this.cdr.detectChanges(); }, 3000);
   }
 
   approve(bookingId: number) {
     this.http.put(`http://127.0.0.1:5000/bookings/${bookingId}/approve`, {}, { headers: this.headers }).subscribe({
-      next: () => { this.actionMsg = `Booking #${bookingId} approved ✅`; this.loadAll(); this.cdr.detectChanges(); },
-      error: (e) => { this.actionMsg = e.error?.error || 'Approval failed'; this.cdr.detectChanges(); }
+      next: () => { this.showToast(`✓ Booking #${bookingId} approved`); this.loadAll(); },
+      error: (e) => { this.showToast(e.error?.error || 'Approval failed'); }
     });
   }
 
   reject(bookingId: number) {
     this.http.put(`http://127.0.0.1:5000/bookings/${bookingId}/reject-booking`, {}, { headers: this.headers }).subscribe({
-      next: () => { this.actionMsg = `Booking #${bookingId} rejected ❌`; this.loadAll(); this.cdr.detectChanges(); },
-      error: (e) => { this.actionMsg = e.error?.error || 'Rejection failed'; this.cdr.detectChanges(); }
+      next: () => { this.showToast(`✗ Booking #${bookingId} rejected`); this.loadAll(); },
+      error: (e) => { this.showToast(e.error?.error || 'Rejection failed'); }
     });
   }
 }

@@ -1,9 +1,33 @@
-<div class="container">
-  <div class="card">
-    <h2>Verify Your Email</h2>
-    <p>
-      We have sent a verification link to your registered email address.
-      Please check your inbox and verify your account.
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Brand -->
+    <div class="auth-brand">
+      <span class="brand-icon">🏠</span>
+      <span class="brand-name">RentControlHQ</span>
+    </div>
+
+    <!-- Email icon -->
+    <div class="verify-icon">✉️</div>
+
+    <h2 class="auth-title">Check Your Inbox</h2>
+    <p class="auth-sub">
+      We've sent a verification link to your registered email address.
+      Click the link in the email to activate your account.
     </p>
+
+    <!-- Tips -->
+    <div class="tips-box">
+      <p class="tip"><span>💡</span> Didn't receive it? Check your <strong>Spam</strong> or <strong>Junk</strong> folder.</p>
+      <p class="tip"><span>⏱️</span> The link expires in <strong>1 hour</strong>.</p>
+    </div>
+
+    <a routerLink="/auth/login" class="btn-primary">Back to Sign In</a>
+
+    <p class="auth-footer">
+      Already verified?
+      <a routerLink="/auth/login">Sign In →</a>
+    </p>
+
   </div>
 </div>

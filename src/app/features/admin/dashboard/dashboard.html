@@ -1,36 +1,84 @@
 <div class="admin-layout">
 
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
     <div class="sidebar-brand">
-      <span class="brand-icon">🏗️</span>
-      <span class="brand-name">RentAdmin</span>
+      <div class="brand-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="url(#brandGrad)"/>
+          <path d="M7 20V12L14 7L21 12V20H17V16H11V20H7Z" fill="white" opacity="0.9"/>
+          <defs>
+            <linearGradient id="brandGrad" x1="0" y1="0" x2="28" y2="28">
+              <stop offset="0%" stop-color="#4f8ef7"/>
+              <stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text" *ngIf="!sidebarCollapsed">
+        <span class="brand-name">RentAdmin</span>
+        <span class="brand-tagline">Management Suite</span>
+      </div>
+    </div>
+
+    <div class="sidebar-toggle" (click)="sidebarCollapsed = !sidebarCollapsed">
+      <span class="toggle-icon">{{ sidebarCollapsed ? '›' : '‹' }}</span>
     </div>
 
     <nav class="sidebar-nav">
+      <div class="nav-section-label" *ngIf="!sidebarCollapsed">NAVIGATION</div>
       <a
         *ngFor="let item of navItems"
         [routerLink]="item.route"
         routerLinkActive="active"
         class="nav-item"
+        [title]="sidebarCollapsed ? item.label : ''"
       >
-        <span class="nav-icon">{{ item.icon }}</span>
-        <span class="nav-label">{{ item.label }}</span>
+        <span class="nav-icon-wrap">
+          <span class="nav-icon">{{ item.icon }}</span>
+        </span>
+        <span class="nav-label" *ngIf="!sidebarCollapsed">{{ item.label }}</span>
+        <span class="nav-badge" *ngIf="!sidebarCollapsed && item.badge">{{ item.badge }}</span>
       </a>
     </nav>
 
-    <button class="logout-btn" (click)="logout()">
-      <span>🚪</span> Logout
-    </button>
+    <div class="sidebar-footer">
+      <div class="admin-profile" *ngIf="!sidebarCollapsed">
+        <div class="profile-avatar">{{ adminName.charAt(0).toUpperCase() }}</div>
+        <div class="profile-info">
+          <span class="profile-name">{{ adminName }}</span>
+          <span class="profile-role">Administrator</span>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()" [title]="sidebarCollapsed ? 'Logout' : ''">
+        <span class="logout-icon">⎋</span>
+        <span *ngIf="!sidebarCollapsed">Logout</span>
+      </button>
+    </div>
   </aside>
 
   <!-- Main content -->
-  <div class="main-content">
+  <div class="main-content" [class.expanded]="sidebarCollapsed">
     <header class="topbar">
-      <h1 class="topbar-title">Admin Dashboard</h1>
-      <div class="topbar-user">
-        <span class="avatar">👤</span>
-        <span>{{ adminName }}</span>
+      <div class="topbar-left">
+        <div class="page-breadcrumb">
+          <span class="breadcrumb-root">Admin</span>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">{{ currentPageTitle }}</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-time">{{ currentTime }}</div>
+        <div class="topbar-notifications">
+          <span class="notif-bell">🔔</span>
+        </div>
+        <div class="topbar-user">
+          <div class="user-avatar-sm">{{ adminName.charAt(0).toUpperCase() }}</div>
+          <div class="user-info-sm">
+            <span class="user-name-sm">{{ adminName }}</span>
+            <span class="user-role-sm">Admin</span>
+          </div>
+        </div>
       </div>
     </header>
 

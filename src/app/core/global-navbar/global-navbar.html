@@ -1,0 +1,19 @@
+<!-- COMPACT mode: only a floating Home pill for admin/user pages -->
+<div class="home-pill" *ngIf="compact" (click)="goHome()" title="Go to Home">
+  <span>🏠</span>
+  <span class="pill-label">Home</span>
+</div>
+
+<!-- FULL navbar: home page + auth pages -->
+<nav class="global-nav" *ngIf="!compact">
+  <a class="nav-brand" [routerLink]="isHome ? null : '/'" (click)="!isHome && goHome()">
+    <span class="brand-icon">🏠</span>
+    <span class="brand-name">RentControlHQ</span>
+  </a>
+
+  <div class="nav-links">
+    <span *ngIf="!isHome" class="nav-link home-link" (click)="goHome()">Home</span>
+    <a routerLink="/auth/login"    routerLinkActive="active" class="nav-link">Sign In</a>
+    <a routerLink="/auth/register" class="btn-nav-cta">Get Started →</a>
+  </div>
+</nav>

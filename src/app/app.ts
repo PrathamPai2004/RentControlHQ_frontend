@@ -1,12 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { GlobalNavbar } from './core/global-navbar/global-navbar';
+import { TransitionOverlay } from './core/transition/transition-overlay';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, GlobalNavbar, TransitionOverlay],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('rental-management-frontend');
-}
+export class App {}

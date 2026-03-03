@@ -14,6 +14,7 @@ export class Towers implements OnInit {
   towers: any[] = [];
   loading = true;
   error = '';
+  selectedTower: any = null;
 
   // Add Tower form
   showForm = false;
@@ -29,6 +30,10 @@ export class Towers implements OnInit {
     return new HttpHeaders({ Authorization: `Bearer ${localStorage.getItem('token')}` });
   }
 
+  get totalUnits(): number {
+    return this.towers.reduce((sum, t) => sum + (t.total_units || 0), 0);
+  }
+
   ngOnInit() {
     this.loadTowers();
   }
@@ -38,9 +43,34 @@ export class Towers implements OnInit {
     if (!token) { this.error = 'No auth token found.'; this.loading = false; return; }
     this.loading = true;
     this.http.get<any[]>('http://127.0.0.1:5000/towers/', { headers: this.headers }).subscribe({
-      next: (data) => { this.towers = data; this.loading = false; this.cdr.detectChanges(); },
-      error: (err) => { this.error = err.error?.error || 'Failed to load towers'; this.loading = false; this.cdr.detectChanges(); }
+      next: (data) => {
+        this.towers = data;
+        this.loading = false;
+        // Reselect the tower if it was previously selected
+        if (this.selectedTower) {
+          this.selectedTower = this.towers.find(t => t.id === this.selectedTower.id) || null;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to load towers';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
+  }
+
+  selectTower(tower: any) {
+    if (this.selectedTower?.id === tower.id) {
+      this.selectedTower = null;
+    } else {
+      this.selectedTower = tower;
+    }
+  }
+
+  getFloorHeight(units: number): string {
+    const h = Math.min(Math.max(units / 2, 20), 80);
+    return h + 'px';
   }
 
   addTower() {
@@ -53,7 +83,7 @@ export class Towers implements OnInit {
       { headers: this.headers }
     ).subscribe({
       next: (res) => {
-        this.addMsg = res.message;
+        this.addMsg = res.message || 'Tower added successfully!';
         this.newName = '';
         this.newTotalUnits = null;
         this.adding = false;
